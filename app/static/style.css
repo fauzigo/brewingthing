@@ -1,0 +1,28 @@
+
+html, body{
+	/*
+	margin:0;
+	width:100%;
+	*/
+	padding:0;
+}
+
+#humd,#cpu,#temp,#wort{
+	min-width:100px;
+	height: 80px;
+	margin:0px auto;
+	text-align: center;
+	line-height: 80px;
+	height: 80px;
+}
+
+.split-l {
+	width: 50%;
+	float: left;
+}
+
+.split-r {
+	width: 50%;
+	float: right;
+}
+

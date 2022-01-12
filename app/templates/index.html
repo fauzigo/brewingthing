@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+{% if temperature | int != 0 %}
+{% set temp_style = ( convert_fahrenheit(temperature) | int )  %}
+{% else %}
+{% set temp_style, temperature = 0,0 %}
+{% endif %}
+
+{% if wort_temp | int != 0 %}
+{% set wort_style, wort_fahrenheit = ( (convert_fahrenheit(wort_temp) * 1.1) | int ), convert_fahrenheit(wort_temp) | round(2)  %}
+{% else %}
+{% set wort_style, wort_output = 0,"N/A" %}
+{% endif %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'style.css') }}" media="screen" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'style-temperatures.css') }}" media="screen" />
+    <!-- <script type = "text/javascript" src = "{{ url_for('static', filename = 'hello.js') }}" ></script> -->
+    <title>Temperatures readings</title>
+</head>
+<body>
+    <h2>Hello Sr.!</h2>
+    <div id="temp">
+	    <div class="split-l">Temperature: </div>
+	    {% if temp_style % 2 != 0 %}
+	    {% set temp_style = temp_style + 1 %}
+	    {% endif %}
+	    <div class="split-r temp-{{ temp_style }}">{{ temperature | round(2) }} &deg;C, {{ convert_fahrenheit(temperature) | round(2) }} &deg;F</div>
+    </div>
+    <div id="wort">
+	    {% if wort_style % 2 != 0 %}
+	    {% set wort_style = wort_style + 1 %}
+	    {% endif %}
+	    <div class="split-l">Wort Temp: </div>
+	    {% if wort_style != 0 %}
+	    <div class="split-r temp-{{ wort_style }}">{{ wort_temp | round(2) }} &deg;C, {{ wort_fahrenheit }} &deg;F</div>
+	    {% else %}
+	    <div class="split-r temp-{{ wort_style }}">N/A</div>
+	    {% endif %}
+    </div>
+    <div id="humd">
+	    <div class="split-l">Humidity: </div>
+	    <div class="split-r">{{ humd | round(2) }}%</div>
+    </div>
+    <div id="cpu">
+	    <div class="split-l">CPU Temp: </div>
+	    <div class="split-r">{{ cpu_temp | round(2) }} &deg;C, {{ convert_fahrenheit(cpu_temp) | round(2) }} &deg;F</div>
+    </div>
+    <div id="date">
+	    {{ get_now() }}
+    </div>
+    <!--
+    <div id="picamera">
+	    <img src="http://raspberrypi:9090" id='pics'>
+    </div>
+    -->
+</body>
+</html>
