@@ -17,8 +17,8 @@ pip install -r requirements.txt
 Copy the unit file
 
 ```bash
-cp unit_files/thermometers.service /etc/systemd/system/
-sudo systemctl enable thermometers --now
+cp unit_files/brewingthing.service /etc/systemd/system/
+sudo systemctl enable brewingthing --now
 ```
 
 Now you should be able to access the raspberry pi IP address or domain name over port 8080

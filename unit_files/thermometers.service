@@ -5,10 +5,10 @@ After=network.target
 [Service]
 User=pi
 Group=pi
-WorkingDirectory=/home/pi/thermometers/app
-Environment="PATH=/home/pi/thermometers/venv/bin"
-#ExecStart=/bin/bash -c 'source /home/pi/thermometers/venv/bin/activate; gunicorn -w 3 --bind unix:/tmp/thermometers/ipc.sock app.main:app'
-ExecStart=/bin/bash -c 'source /home/pi/thermometers/venv/bin/activate; gunicorn --config /home/pi/thermometers/app/gunicorn_conf.py main:app'
+WorkingDirectory=/home/pi/brewingthing/app
+Environment="PATH=/home/pi/brewingthing/venv/bin"
+#ExecStart=/bin/bash -c 'source /home/pi/brewingthing/venv/bin/activate; gunicorn -w 3 --bind unix:/tmp/brewingthing/ipc.sock app.main:app'
+ExecStart=/bin/bash -c 'source /home/pi/brewingthing/venv/bin/activate; gunicorn --config /home/pi/brewingthing/app/gunicorn_conf.py main:app'
 Restart=always
 
 [Install]
