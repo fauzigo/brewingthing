@@ -1,10 +1,14 @@
 import os
+import Adafruit_DHT
 from datetime import datetime,timezone
 
 
 DEVICE_FOLDER = "/sys/bus/w1/devices/"
 DEVICE_SUFFIX = "/temperature"
 WAIT_INTERVAL = 0.2
+
+DHT_SENSOR = Adafruit_DHT.DHT22
+DHT_PIN = 24
 
 CPU_THERMAL = '/sys/class/thermal/thermal_zone0/temp'
 
@@ -48,7 +52,7 @@ def guess_temperature_sensor():
         #sys.exit("Sorry, no temperature sensors found")
 
 
-def get_immersed_temperature(device=None):
+def get_ds18b20_temperature(device=None):
     """
     Get a raw temperature reading from the temperature sensor
     """
@@ -66,14 +70,49 @@ def get_immersed_temperature(device=None):
     if raw_reading != -1:
         #print(raw_reading)
         temperature = float(raw_reading) / 1000.0
-    return temperature
+        return temperature
+    else:
+        return False
 
 
 def get_now():
     return datetime.now(timezone.utc).isoformat()
 
 def get_temp_style(temp):
-    output = c_to_f(temp) if isinstance(temp,int) else 0
+    output = int(c_to_f(temp)) if isinstance(temp,float) else 0
+    if output % 2 == 0:
+        return output
+    else:
+        return output + 1
+
+def dht22_to_display():
+    output = {}
+    humidity, temperature = Adafruit_DHT.read_retry(DHT_SENSOR, DHT_PIN)
+    if humidity is not None and temperature is not None:
+        output["celsius"]    = round(temperature,2)
+        output["fahrenheit"] = round(c_to_f(temperature),2)
+        output["humidity"]   = round(humidity,2)
+        output["valid"]      = True
+    else:
+        output["celsius"]    = "N/A"
+        output["fahrenheit"] = "N/A"
+        output["humidity"]   = "N/A"
+        output["valid"]      = False
+    output["style"]          = get_temp_style(temperature)
+    return output
+
+def ds18b20_to_display():
+    output = {}
+    temperature = get_ds18b20_temperature()
+    if temperature:
+        output["celsius"]    = round(temperature,2)
+        output["fahrenheit"] = round(c_to_f(temperature),2)
+        output["valid"]      = True
+    else:
+        output["celsius"]    = "N/A"
+        output["fahrenheit"] = "N/A"
+        output["valid"]      = False
+    output["style"]          = get_temp_style(temperature)
     return output
 
 def start_camera_streaming_service():
