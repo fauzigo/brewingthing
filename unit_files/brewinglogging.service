@@ -1,0 +1,14 @@
+[Unit]
+Description=Brewing session temperature reading logger
+After=network.target
+
+[Service]
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/brewingthing/app
+#Environment="PATH=/home/pi/brewingthing/venv/bin"
+ExecStart=/bin/bash -c 'source /home/pi/brewingthing/venv/bin/activate; python3 /home/pi/brewingthing/app/logger.py start'
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
