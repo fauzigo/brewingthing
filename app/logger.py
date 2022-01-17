@@ -19,8 +19,8 @@ class SessionLogger():
             new_read = self.get_readings()
             new_data = data["session"]["readings"].append(new_read)
             self.update_file(json.dumps(data))
-            time.sleep(1800)
             print("logged: {}".format(new_read))
+            time.sleep(1800)
             #time.sleep(60)
 
     def start(self):
