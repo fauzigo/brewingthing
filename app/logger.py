@@ -7,8 +7,6 @@ import threading
 import utils as ut
 from datetime import datetime,timezone
 
-#current_session = "/home/pi/sessions/current.json"
-
 class SessionLogger():
     def __init__(self):
         self.timer_flag = False
@@ -21,7 +19,7 @@ class SessionLogger():
             new_read = self.get_readings()
             new_data = data["session"]["readings"].append(new_read)
             self.update_file(json.dumps(data))
-            time.sleep(900)
+            time.sleep(1800)
             print("logged: {}".format(new_read))
             #time.sleep(60)
 
@@ -34,7 +32,7 @@ class SessionLogger():
         self.timer.join()
     
     def update_file(self, data):
-        print(data)
+        #print(data)
         with open(self.current_s, 'w') as f:
             f.write(data)
 
