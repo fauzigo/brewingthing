@@ -10,7 +10,10 @@
     <title>Temperatures readings</title>
 </head>
 <body>
-    <h2>Hello Sr.!</h2>
+    <h2>Hello!</h2>
+    <div id="date">
+	    {{ get_now() }}
+    </div>
     <div id="temp">
 	    <div class="split-l">Temperature: </div>
 	    <div class="split-r temp-{{ environment['style'] }}">{{ environment["celsius"] }} &deg;C, {{ environment["fahrenheit"] }} &deg;F</div>
@@ -27,13 +30,50 @@
 	    <div class="split-l">CPU Temp: </div>
 	    <div class="split-r">{{ cpu }} &deg;C, {{ convert_fahrenheit(cpu) | round(2) }} &deg;F</div>
     </div>
-    <div id="date">
-	    {{ get_now() }}
-    </div>
     <!--
     <div id="picamera">
 	    <img src="http://raspberrypi:9090" id='pics'>
     </div>
     -->
+    {% if session_log %}
+    <br>
+    <div id="session">
+	    <div id="session-header">
+		    <pre>
+		    Recipe: {{ session_log["recipe"]["name"] }}
+		    Type: {{ session_log["recipe"]["type"]["name"] }}
+		    Session date: {{ pretty_date(session_log["session"]["date"]) }}
+		    </pre>
+	    </div>
+	    <div id="averages">
+		    <pre>
+		    Env average temperature: {{ session_log["env_avg"] }}&deg;F
+		    Wort average temperature: {{ session_log["wort_avg"] }}&deg;F
+		    </pre>
+	    </div>
+	    <br>
+	    <div id="readings">Readings</div>
+	    <table>
+		    <tr>
+			    <th>Date</th>
+			    <th>Environment</th>
+			    <th>Wort</th>
+			    <th>Humidity</th>
+		    </tr>
+	    {% for s in session_log["session"]["readings"] %}
+		    <tr>
+			    <td>{{ pretty_date(s["date"]) }}</td>
+			    <!-- <td>{{ s["env"]["celsius"] }} &deg;C, {{ s["env"]["fahrenheit"] }} &deg;F</td>
+			    <td>{{ s["wort"]["celsius"] }} &deg;C, {{ s["wort"]["fahrenheit"] }} &deg;F</td> -->
+			    <td>{{ s["env"]["fahrenheit"] }} &deg;F</td>
+			    <td>{{ s["wort"]["fahrenheit"] }} &deg;F</td>
+			    <td>{{ s["humidity"] }} %</td>
+		    </tr>
+	    {% endfor %}
+	    </table>
+    {% endif %}
+    </div>
+
+
 </body>
 </html>

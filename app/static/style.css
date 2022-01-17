@@ -26,3 +26,11 @@ html, body{
 	float: right;
 }
 
+#session table {
+	width: 100%;
+}
+
+#session table, th, td{
+	border: 1px solid black;
+	border-collapse: collapse;
+}

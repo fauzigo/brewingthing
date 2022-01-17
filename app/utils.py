@@ -1,6 +1,8 @@
 import os
+import json
 import Adafruit_DHT
 from datetime import datetime,timezone
+from tzlocal import get_localzone
 
 
 DEVICE_FOLDER = "/sys/bus/w1/devices/"
@@ -114,6 +116,40 @@ def ds18b20_to_display():
         output["valid"]      = False
     output["style"]          = get_temp_style(temperature)
     return output
+
+def get_session_history():
+    log = "/home/pi/sessions/current.json"
+    if os.path.exists(log):
+        data = {}
+        with open(log,'r') as f:
+            data = json.load(f)
+            env_avg  = list_average(data,"env")
+            wort_avg = list_average(data,"wort")
+            data["env_avg"]  = env_avg
+            data["wort_avg"] = wort_avg
+        return data
+    else:
+        return False
+
+def list_average(data,what):
+    readings_amount = 0 #len(data['session']["readings"])
+    readings_sum = 0
+    for deg in data['session']["readings"]:
+        if isinstance(deg[what]["fahrenheit"],float):
+            readings_sum += deg[what]["fahrenheit"]
+            readings_amount += 1
+    if readings_amount > 0:
+        avg = round(readings_sum / readings_amount,2)
+    else:
+        avg = 0
+    return avg
+
+
+def pretty_date(date):
+    easy_format = "%m/%d/%Y %H:%M %Z"
+    utc = datetime.fromisoformat(date)
+    local_time = utc.astimezone(get_localzone())
+    return local_time.strftime(easy_format)
 
 def start_camera_streaming_service():
     global foo
