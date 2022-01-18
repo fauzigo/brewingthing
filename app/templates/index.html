@@ -72,7 +72,7 @@ Wort stats:
 				    <td>{{ pretty_date(s["date"]) }}</td>
 				    <td>{% if s["env"]["fahrenheit"] is float %}{{ '%0.2f'|format(s["env"]["fahrenheit"]|float) }}&deg;F{% else %}N/A{% endif %}</td>
 				    <td>{% if s["wort"]["fahrenheit"] is float %}{{ '%0.2f'|format(s["wort"]["fahrenheit"]|float) }}&deg;F{% else %}N/A{% endif %}</td>
-				    <td>{% if s["humidity"] is float %}{{ '%0.2f'|format(s["humidity"]|float) }}&deg;F{% else %}N/A{% endif %}</td>
+				    <td>{% if s["humidity"] is float %}{{ '%0.2f'|format(s["humidity"]|float) }}%{% else %}N/A{% endif %}</td>
 				    <!-- <td>{{ s["env"]["fahrenheit"] }} &deg;F</td>
 				    <td>{{ s["wort"]["fahrenheit"] }} &deg;F</td>
 				    <td>{{ s["humidity"] }} %</td> -->
