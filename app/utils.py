@@ -1,6 +1,7 @@
 import os
 import json
 import Adafruit_DHT
+import statistics
 from datetime import datetime,timezone
 from tzlocal import get_localzone
 
@@ -122,11 +123,13 @@ def get_session_history():
     if os.path.exists(log):
         data = {}
         with open(log,'r') as f:
-            data = json.load(f)
-            env_avg  = list_average(data,"env")
-            wort_avg = list_average(data,"wort")
-            data["env_avg"]  = env_avg
-            data["wort_avg"] = wort_avg
+            data               = json.load(f)
+            #env_avg            = list_average(data,"env")
+            #wort_avg           = list_average(data,"wort")
+            #data["env_avg"]    = env_avg
+            #data["wort_avg"]   = wort_avg
+            data["env_stats"]  = get_stats(get_single_list(data,"env","fahrenheit"))
+            data["wort_stats"] = get_stats(get_single_list(data,"wort","fahrenheit"))
         return data
     else:
         return False
@@ -143,6 +146,24 @@ def list_average(data,what):
     else:
         avg = 0
     return avg
+
+def get_single_list(data,what,which):
+    data_list = []
+    for deg in data['session']['readings']:
+        if isinstance(deg[what][which],float):
+            data_list.append(deg[what][which])
+    if len(data_list) == 0:
+        return None
+    else:
+        return data_list
+
+def get_stats(data_list):
+    list_stats         = { "mean":'N/A',"max": 'N/A',"min":'N/A' }
+    if data_list is not None:
+        list_stats['mean'] = statistics.mean(data_list)
+        list_stats['max']  = max(data_list)
+        list_stats['min']  = min(data_list)
+    return list_stats
 
 
 def pretty_date(date):

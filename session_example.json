@@ -1,0 +1,35 @@
+{
+	"recipe": {
+		"name": "Brown Ale 1",
+		"id": "6914d5c4-76e2-11ec-85e8-7732e89075a5",
+		"type": {
+			"id": 55,
+			"name": "brown ale"
+		}
+	},
+	"session": {
+		"date": "2022-01-15T22:00:00.000000+06:00",
+		"readings": [
+			{
+				"date": "2022-01-16T16:15:12.218087+00:00",
+				"env": {
+						"celsius": 17.9,
+						"fahenheith": 64.22
+				},
+				"wort": 
+					{
+						"celsius": 17.9,
+						"fahrenheith": 64.22
+					},
+				"cpu": {
+						"celsius": "38.628",
+						"fahrenheith": "101.53"
+					},
+				"humidity": 33.4
+			}
+		]
+	}
+}
+
+
+

@@ -12,7 +12,7 @@
 <body>
     <h2>Hello!</h2>
     <div id="date">
-	    {{ get_now() }}
+	    Current readinds as of {{ get_now() }}
     </div>
     <div id="temp">
 	    <div class="split-l">Temperature: </div>
@@ -38,39 +38,50 @@
     {% if session_log %}
     <br>
     <div id="session">
+	    <h3>Session information:</h3>
 	    <div id="session-header">
 		    <pre>
-		    Recipe: {{ session_log["recipe"]["name"] }}
-		    Type: {{ session_log["recipe"]["type"]["name"] }}
-		    Session date: {{ pretty_date(session_log["session"]["date"]) }}
+Recipe: {{ session_log["recipe"]["name"] }}
+Type:   {{ session_log["recipe"]["type"]["name"] }}
+Session date: {{ pretty_date(session_log["session"]["date"]) }}
 		    </pre>
 	    </div>
 	    <div id="averages">
 		    <pre>
-		    Env average temperature: {{ session_log["env_avg"] }}&deg;F
-		    Wort average temperature: {{ session_log["wort_avg"] }}&deg;F
+Env stats:
+	Mean temperature: {% if session_log["env_stats"]["mean"] is float %}{{ '%0.2f'|format(session_log["env_stats"]["mean"]|float) }}&deg;F{% else %}N/A{% endif %}
+	Max  temperature: {% if session_log["env_stats"]["max"] is float %}{{ '%0.2f'|format(session_log["env_stats"]["max"]|float) }}&deg;F {% else %}N/A{% endif %}
+	Min  temperature: {% if session_log["env_stats"]["min"] is float %}{{ '%0.2f'|format(session_log["env_stats"]["min"]|float) }}&deg;F{% else %}N/A{% endif %}
+Wort stats:
+	Mean temperature: {% if session_log["wort_stats"]["mean"] is float %}{{ '%0.2f'|format(session_log["wort_stats"]["mean"]|float) }}&deg;F{% else %}N/A{% endif %}
+	Max  temperature: {% if session_log["wort_stats"]["max"] is float %}{{ '%0.2f'|format(session_log["wort_stats"]["max"]|float) }}&deg;F{% else %}N/A{% endif %}
+	Min  temperature: {% if session_log["wort_stats"]["min"] is float %}{{ '%0.2f'|format(session_log["wort_stats"]["min"]|float) }}&deg;F{% else %}N/A{% endif %}
 		    </pre>
 	    </div>
 	    <br>
-	    <div id="readings">Readings</div>
-	    <table>
-		    <tr>
-			    <th>Date</th>
-			    <th>Environment</th>
-			    <th>Wort</th>
-			    <th>Humidity</th>
-		    </tr>
-	    {% for s in session_log["session"]["readings"] %}
-		    <tr>
-			    <td>{{ pretty_date(s["date"]) }}</td>
-			    <!-- <td>{{ s["env"]["celsius"] }} &deg;C, {{ s["env"]["fahrenheit"] }} &deg;F</td>
-			    <td>{{ s["wort"]["celsius"] }} &deg;C, {{ s["wort"]["fahrenheit"] }} &deg;F</td> -->
-			    <td>{{ s["env"]["fahrenheit"] }} &deg;F</td>
-			    <td>{{ s["wort"]["fahrenheit"] }} &deg;F</td>
-			    <td>{{ s["humidity"] }} %</td>
-		    </tr>
-	    {% endfor %}
-	    </table>
+	    <div id="readings">Readings
+		    <table>
+			    <tr>
+				    <th>Date</th>
+				    <th>Env</th>
+				    <th>Wort</th>
+				    <th>Humidity</th>
+			    </tr>
+			    {% for s in session_log["session"]["readings"] %}
+			    <tr>
+				    <td>{{ pretty_date(s["date"]) }}</td>
+				    <td>{% if s["env"]["fahrenheit"] is float %}{{ '%0.2f'|format(s["env"]["fahrenheit"]|float) }}&deg;F{% else %}N/A{% endif %}</td>
+				    <td>{% if s["wort"]["fahrenheit"] is float %}{{ '%0.2f'|format(s["wort"]["fahrenheit"]|float) }}&deg;F{% else %}N/A{% endif %}</td>
+				    <td>{% if s["humidity"] is float %}{{ '%0.2f'|format(s["humidity"]|float) }}&deg;F{% else %}N/A{% endif %}</td>
+				    <!-- <td>{{ s["env"]["fahrenheit"] }} &deg;F</td>
+				    <td>{{ s["wort"]["fahrenheit"] }} &deg;F</td>
+				    <td>{{ s["humidity"] }} %</td> -->
+				    <!-- <td>{{ s["env"]["celsius"] }} &deg;C, {{ s["env"]["fahrenheit"] }} &deg;F</td>
+					 <td>{{ s["wort"]["celsius"] }} &deg;C, {{ s["wort"]["fahrenheit"] }} &deg;F</td> -->
+			    </tr>
+			    {% endfor %}
+		    </table>
+	    </div>
     {% endif %}
     </div>
 
