@@ -17,11 +17,24 @@ pip install -r requirements.txt
 Copy the unit file
 
 ```bash
+cd brewingthing
 cp unit_files/brewingthing.service /etc/systemd/system/
 sudo systemctl enable brewingthing --now
 ```
 
 Now you should be able to access the raspberry pi IP address or domain name over port 8080
+
+## Data log
+
+You can add a new service that would record readings each half an hour into a json file at `/home/pi/sessions/current.json`
+
+```bash
+cd brewingthing
+cp unit_files/brewinglogging.service /etc/systemd/system/
+sudo systemctl enable brewinglogging --now
+```
+
+Check on `session_example.json` for an example of the log file.
 
 
 ##  Hardware Implementation
