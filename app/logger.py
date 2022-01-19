@@ -32,7 +32,7 @@ class SessionLogger():
     def stop(self):
         self.timer_flag   = False
         self.timer.join()
-    
+
     def update_file(self, data):
         #print(data)
         with open(self.current_s, 'w') as f:
@@ -62,7 +62,14 @@ class SessionLogger():
         return new_read
 
     def get_weather_info(self):
-        weather_info = json.loads(requests.get(self.weather_url).text)
+        #weather_info = json.loads(requests.get(self.weather_url).text)
+        weather_info = {}
+        try:
+            weather_info = requests.get(self.weather_url,timeout=2).json()
+        except Exception as e:
+            print(e)
+            weather_info["current_condition"] = []
+            weather_info["nearest_area"] = []
         #print(weather_info)
         return weather_info
 
