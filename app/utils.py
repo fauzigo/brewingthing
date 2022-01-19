@@ -11,9 +11,12 @@ DEVICE_SUFFIX = "/temperature"
 WAIT_INTERVAL = 0.2
 
 DHT_SENSOR = Adafruit_DHT.DHT22
-DHT_PIN = 24
+DHT_PIN    = 24
 
 CPU_THERMAL = '/sys/class/thermal/thermal_zone0/temp'
+LOG_FILE    = "/home/pi/sessions/current.json"
+
+DATE_EASY_FORMAT = "%m/%d/%Y %H:%M %Z"
 
 def get_cpu_temp():
     """
@@ -23,8 +26,6 @@ def get_cpu_temp():
     """
     # Initialize the result.
     result = 0.0
-    # The first line in this file holds the CPU temperature as an integer times 1000.
-    # Read the first line and remove the newline character at the end of the string.
     if os.path.isfile(CPU_THERMAL):
         with open(CPU_THERMAL) as f:
             line = f.readline().strip()
@@ -67,11 +68,8 @@ def get_ds18b20_temperature(device=None):
 
     raw_reading = None
     with open(device, 'r') as sensor:
-        #print(sensor.read())
-        #raw_reading = sensor.readlines()
         raw_reading = sensor.read()
     if raw_reading != -1:
-        #print(raw_reading)
         temperature = float(raw_reading) / 1000.0
         return temperature
     else:
@@ -119,45 +117,30 @@ def ds18b20_to_display():
     return output
 
 def get_session_history():
-    log = "/home/pi/sessions/current.json"
-    if os.path.exists(log):
+    #log = "/home/pi/sessions/current.json"
+    if os.path.exists(LOG_FILE):
         data = {}
-        with open(log,'r') as f:
+        with open(LOG_FILE,'r') as f:
             data               = json.load(f)
-            #env_avg            = list_average(data,"env")
-            #wort_avg           = list_average(data,"wort")
-            #data["env_avg"]    = env_avg
-            #data["wort_avg"]   = wort_avg
-            data["env_stats"]  = get_stats(get_single_list(data,"env","fahrenheit"))
-            data["wort_stats"] = get_stats(get_single_list(data,"wort","fahrenheit"))
+            data["env_stats"]  = get_list_stats(get_only_temperatures_list(data,"env","fahrenheit"))
+            data["wort_stats"] = get_list_stats(get_only_temperatures_list(data,"wort","fahrenheit"))
         return data
     else:
         return False
 
-def list_average(data,what):
-    readings_amount = 0 #len(data['session']["readings"])
-    readings_sum = 0
-    for deg in data['session']["readings"]:
-        if isinstance(deg[what]["fahrenheit"],float):
-            readings_sum += deg[what]["fahrenheit"]
-            readings_amount += 1
-    if readings_amount > 0:
-        avg = round(readings_sum / readings_amount,2)
-    else:
-        avg = 0
-    return avg
-
-def get_single_list(data,what,which):
+def get_only_temperatures_list(data,what,which):
     data_list = []
-    for deg in data['session']['readings']:
-        if isinstance(deg[what][which],float):
-            data_list.append(deg[what][which])
+    readings = data['session']['readings']
+    #data_list = list(filter(lambda s[what][which]: isinstance(s[what][which],float), readings))
+    for s in readings:
+        if isinstance(s[what][which],float):
+            data_list.append(s[what][which])
     if len(data_list) == 0:
         return None
     else:
         return data_list
 
-def get_stats(data_list):
+def get_list_stats(data_list):
     list_stats         = { "mean":'N/A',"max": 'N/A',"min":'N/A' }
     if data_list is not None:
         list_stats['mean'] = statistics.mean(data_list)
@@ -167,15 +150,14 @@ def get_stats(data_list):
 
 
 def pretty_date(date):
-    easy_format = "%m/%d/%Y %H:%M %Z"
     utc = datetime.fromisoformat(date)
     local_time = utc.astimezone(get_localzone())
-    return local_time.strftime(easy_format)
+    return local_time.strftime(DATE_EASY_FORMAT)
 
 def start_camera_streaming_service():
     global foo
     print("starting streaming")
-    foo = __import__('app.picamera_stream')
+    foo = __import__('picamera_stream')
     print("streaming started")
 
 

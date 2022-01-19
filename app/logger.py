@@ -4,14 +4,16 @@ import os
 import argparse
 import time
 import threading
+import requests
 import utils as ut
 from datetime import datetime,timezone
 
 class SessionLogger():
     def __init__(self):
-        self.timer_flag = False
-        self.timer      = threading.Thread(target=self.fun_timer, name="Logging") #,daemon="True")
-        self.current_s  = "/home/pi/sessions/current.json"
+        self.timer_flag  = False
+        self.timer       = threading.Thread(target=self.fun_timer, name="Logging") #,daemon="True")
+        self.current_s   = ut.LOG_FILE
+        self.weather_url = 'http://wttr.in/?format=j1'
 
     def fun_timer(self):
         while self.timer_flag:
@@ -40,21 +42,29 @@ class SessionLogger():
         data = {}
         with open(self.current_s, 'r') as f:
             data = json.load(f)
-            print(data)
+            #print(data)
         return data
 
     def get_readings(self):
-        now = ut.get_now()
-        wort = ut.ds18b20_to_display()
-        env  = ut.dht22_to_display()
-        cpu  = ut.get_cpu_temp()
+        now      = ut.get_now()
+        wort     = ut.ds18b20_to_display()
+        env      = ut.dht22_to_display()
+        cpu      = ut.get_cpu_temp()
+        weather  = self.get_weather_info()
         new_read = { "date": now,
                 "env": { "celsius": env["celsius"], "fahrenheit": env["fahrenheit"] },
                 "wort": { "celsius": wort["celsius"], "fahrenheit": wort["fahrenheit"] },
                 "cpu": { "celsius": round(cpu,2), "fahrenheit": round(ut.c_to_f(cpu),2) },
-                "humidity": env["humidity"]
+                "humidity": env["humidity"],
+                "current_conditions": weather['current_condition'][0],
+                "nearest_area": weather['nearest_area'][0]
                 }
         return new_read
+
+    def get_weather_info(self):
+        weather_info = json.loads(requests.get(self.weather_url).text)
+        #print(weather_info)
+        return weather_info
 
 
 if __name__ == "__main__":
