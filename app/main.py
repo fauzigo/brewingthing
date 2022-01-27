@@ -26,7 +26,15 @@ def main():
     return render_template("index.html",environment=environment,probe=probe,cpu=cpu,session_log=logs)
     #video_streaming       = threading.Thread(target=ut.start_camera_streaming_service, name="Thread1",daemon="True")
     #video_streaming.start()
-    
+
+@app.route("/ext")
+def ext():
+    cpu         = ut.get_cpu_temp()
+    environment = ut.dht22_to_display()
+    probe       = ut.ds18b20_to_display()
+    logs        = ut.get_session_history()
+    return render_template("extended.html",environment=environment,probe=probe,cpu=cpu,session_log=logs)
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
