@@ -68,8 +68,8 @@ class SessionLogger():
             weather_info = requests.get(self.weather_url,timeout=2).json()
         except Exception as e:
             print(e)
-            weather_info["current_condition"] = []
-            weather_info["nearest_area"] = []
+            weather_info["current_condition"] = ['N/A']
+            weather_info["nearest_area"] = ['N/A']
         #print(weather_info)
         return weather_info
 
