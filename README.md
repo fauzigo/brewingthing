@@ -38,6 +38,9 @@ sudo systemctl enable brewinglogging --now
 
 Check on `session_example.json` for an example of the log file.
 
+Additionally, if logging is enabled, you can access `/ext` for and extended report (ex. http://brewingthing:8080/ext or http://192.168.0.100:8080/ext)
+NOTE: Right now only show outside's temperature, thanks to wttr.in
+
 
 ##  Hardware Implementation
 
