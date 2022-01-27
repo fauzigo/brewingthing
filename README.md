@@ -1,8 +1,10 @@
 # brewingthing
 
-Thing to check on brewing session temperatures
+Thing to check on brewing sessions temperatures
 
-Comprised by a raspberry pi with a DHT22 and a DS18B20 sensors connected to the raspberry GPIO board, we intend to check on temperatures related to brewing sessions. Temperature of the wort, and temperature and humidity of the environment, and show up the information in a browser through Flask.
+Comprised by a raspberry pi with a DHT22 and a DS18B20 sensors connected to the raspberry's GPIO board. We intend to check on temperatures related to brewing sessions. Temperature of the wort, and temperature and humidity of the environment, and show up the information in a browser through Flask.
+
+Additionally, the application collect external weather information through wttr.in. Currently, nothing external is shown up in the browser, but might at some point.
 
 ## How to
 
@@ -14,7 +16,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Copy the unit file
+Copy the unit file, this would enable the service and let you access information of the brewing session.
 
 ```bash
 cd brewingthing
@@ -22,11 +24,11 @@ cp unit_files/brewingthing.service /etc/systemd/system/
 sudo systemctl enable brewingthing --now
 ```
 
-Now you should be able to access the raspberry pi IP address or domain name over port 8080
+Now you should be able to access the raspberry pi's IP address or domain name over port 8080 (ex. http://brewingthing:8080 or http://192.168.0.100:8080)
 
 ## Data log
 
-You can add a new service that would record readings each half an hour into a json file at `/home/pi/sessions/current.json`
+You can add a new service to record readings every half an hour into a json file at `/home/pi/sessions/current.json`. If you do, make sure there is an initial `current.json` file in the location mentioned, otherwise the service will fail.
 
 ```bash
 cd brewingthing
