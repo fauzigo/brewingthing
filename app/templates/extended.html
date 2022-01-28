@@ -72,7 +72,15 @@ Session date: {{ pretty_date(session_log["session"]["date"]) }}
 				    <td>{% if s["env"]["fahrenheit"] is float %}{{ '%0.2f'|format(s["env"]["fahrenheit"]|float) }}&deg;F{% else %}N/A{% endif %}</td>
 				    <td>{% if s["wort"]["fahrenheit"] is float %}{{ '%0.2f'|format(s["wort"]["fahrenheit"]|float) }}&deg;F{% else %}N/A{% endif %}</td>
 				    <td>{% if s["humidity"] is float %}{{ '%0.2f'|format(s["humidity"]|float) }}%{% else %}N/A{% endif %}</td>
-				    <td>{% if "current_conditions" in s and s["current_conditions"] != "N/A" %}{{ s["current_conditions"]["temp_F"] }}&deg;F{% else %}N/A{% endif %}</td>
+				    <td>{% if "current_conditions" in s and s["current_conditions"] != "N/A" %}
+						{% if "main" in s["current_conditions"] %}
+							{{ s["current_conditions"]["main"]["temp"] }}&deg;F
+						{% else %}
+							{{ s["current_conditions"]["temp_F"] }}&deg;F
+						{% endif %}
+					{% else %}
+					    N/A
+					{% endif %}</td>
 			    </tr>
 			    {% endfor %}
 		    </table>

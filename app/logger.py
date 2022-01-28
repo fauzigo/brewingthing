@@ -8,12 +8,24 @@ import requests
 import utils as ut
 from datetime import datetime,timezone
 
+openweather = False
+if "openweather" in os.environ:
+    if os.path.exists(os.environ["openweather"]):
+        with open(os.environ["openweather"]) as w:
+            openweather = json.load(w)["openweather"]
+
 class SessionLogger():
     def __init__(self):
         self.timer_flag  = False
         self.timer       = threading.Thread(target=self.fun_timer, name="Logging") #,daemon="True")
         self.current_s   = ut.LOG_FILE
-        self.weather_url = 'http://wttr.in/?format=j1'
+        if openweather:
+            self.weather_url = openweather["apiurl"] + \
+                    "units=" + openweather["units"] + \
+                    "&zip=" + str(openweather["zip_code"]) + "," + openweather["contry_code"] + \
+                    "&APPID=" + openweather["apikey"]
+        else:
+            self.weather_url = "http://wttr.in/?format=j1"
 
     def fun_timer(self):
         while self.timer_flag:
@@ -51,13 +63,16 @@ class SessionLogger():
         env      = ut.dht22_to_display()
         cpu      = ut.get_cpu_temp()
         weather  = self.get_weather_info()
+        if openweather:
+            current_conditions = weather
+        else:
+            current_conditions = weather['current_condition'][0]
         new_read = { "date": now,
                 "env": { "celsius": env["celsius"], "fahrenheit": env["fahrenheit"] },
                 "wort": { "celsius": wort["celsius"], "fahrenheit": wort["fahrenheit"] },
                 "cpu": { "celsius": round(cpu,2), "fahrenheit": round(ut.c_to_f(cpu),2) },
                 "humidity": env["humidity"],
-                "current_conditions": weather['current_condition'][0],
-                "nearest_area": weather['nearest_area'][0]
+                "current_conditions": current_conditions,
                 }
         return new_read
 

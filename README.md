@@ -41,6 +41,10 @@ Check on `session_example.json` for an example of the log file.
 Additionally, if logging is enabled, you can access `/ext` for and extended report (ex. http://brewingthing:8080/ext or http://192.168.0.100:8080/ext)
 NOTE: Right now only show outside's temperature, thanks to wttr.in
 
+Update: 
+* 2022-01-28: wttr.in has a limitation of 1MM calls overall, so it might just fail if others using the service. openweather can be used instead if you are willing to use their API and create a key for it. Check on the `brewing_example.json` for an example of the configuration file that can be used to access openweather API. Also uncoment the environment variable on the unit file for `brewinglogging.service` if you want to use the feature. For more information regarding openweather: https://openweathermap.org/current
+
+
 
 ##  Hardware Implementation
 

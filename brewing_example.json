@@ -1,0 +1,10 @@
+{
+	"openweather": {
+		"apikey": "XXXXXXXXXXXXXXXXXXX",
+		"units": "imperial",
+		"citi_id": 99999,
+		"zip_code": 60606,
+		"contry_code": "us",
+		"apiurl": "http://api.openweathermap.org/data/2.5/weather?"
+	}
+}
