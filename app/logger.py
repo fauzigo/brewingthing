@@ -9,10 +9,17 @@ import utils as ut
 from datetime import datetime,timezone
 
 openweather = False
-if "openweather" in os.environ:
-    if os.path.exists(os.environ["openweather"]):
-        with open(os.environ["openweather"]) as w:
-            openweather = json.load(w)["openweather"]
+secrets     = False
+warning     = False
+
+if "secrets" in os.environ:
+    if os.path.exists(os.environ["secrets"]):
+        with open(os.environ["secrets"]) as s:
+            secrets = json.load(s)
+            if "openweather" in secrets:
+                openweather = secrets["openweather"]
+            if "warnings" in secrets:
+                warning = secrets["warnings"]
 
 class SessionLogger():
     def __init__(self):
@@ -74,6 +81,7 @@ class SessionLogger():
                 "humidity": env["humidity"],
                 "current_conditions": current_conditions,
                 }
+        self.check_thresholds(wort["fahrenheit"])
         return new_read
 
     def get_weather_info(self):
@@ -87,6 +95,13 @@ class SessionLogger():
             weather_info["nearest_area"] = ['N/A']
         #print(weather_info)
         return weather_info
+
+    def check_thresholds(self,reading):
+        if warning:
+            if reading > warning["threshold_up"] or reading < warning["threshold_down"]:
+                warning["subject"] = "Wort reading reaching threshold"
+                warning["message"] = "Warning, wort tempeture reaching threshold temperaturess\n\nCheck on it:\n\tWort temp: {}".format(reading)
+                ut.send_email(warning)
 
 
 if __name__ == "__main__":

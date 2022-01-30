@@ -154,6 +154,32 @@ def pretty_date(date):
     local_time = utc.astimezone(get_localzone())
     return local_time.strftime(DATE_EASY_FORMAT)
 
+
+def send_email(params):
+    import smtplib, ssl
+    from email.mime.multipart import MIMEMultipart
+    from email.mime.text import MIMEText
+    port           = params["port"]  # For starttls
+    smtp_server    = params["server"]
+    sender_email   = params["from"]
+    receiver_email = params["to"]
+    password       = params["password"]
+    message        = params["message"]
+    msg            = MIMEMultipart()
+    msg['From']    = params["from"]
+    msg['To']      = params["to"]
+    msg['Subject'] = params["subject"]
+    msg.attach(MIMEText(params["message"], 'plain'))
+    
+    context = ssl.create_default_context()
+    with smtplib.SMTP(smtp_server, port) as server:
+        server.ehlo()  # Can be omitted
+        server.starttls(context=context)
+        server.ehlo()  # Can be omitted
+        server.login(sender_email, password)
+        server.send_message(msg)
+        # server.sendmail(sender_email, receiver_email, message)
+
 def start_camera_streaming_service():
     global foo
     print("starting streaming")
