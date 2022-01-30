@@ -43,6 +43,9 @@
 		    <pre>
 Recipe: {{ session_log["recipe"]["name"] }}
 Type:   {{ session_log["recipe"]["type"]["name"] }}
+{% if "fermentation" in session_log["recipe"] %}Fermentation temperatures:
+	High: {{ session_log["recipe"]["fermentation"]["temperatures"]["high"] }}
+	Low: {{ session_log["recipe"]["fermentation"]["temperatures"]["low"] }}{% endif %}
 Session date: {{ pretty_date(session_log["session"]["date"]) }}
 		    </pre>
 	    </div>

@@ -2,9 +2,18 @@
 	"openweather": {
 		"apikey": "XXXXXXXXXXXXXXXXXXX",
 		"units": "imperial",
-		"citi_id": 99999,
+		"citi_id": 999999,
 		"zip_code": 60606,
 		"contry_code": "us",
 		"apiurl": "http://api.openweathermap.org/data/2.5/weather?"
+	},
+	"warnings": {
+		"port": 587,
+		"server": "mail.domain.tld",
+		"from": "me@domain.tld",
+		"to": "you@domain.tld",
+		"password": "XXXXXXXXX",
+		"threshold_up": 80,
+		"threshold_down": 35
 	}
 }

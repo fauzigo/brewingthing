@@ -26,6 +26,8 @@ class SessionLogger():
         self.timer_flag  = False
         self.timer       = threading.Thread(target=self.fun_timer, name="Logging") #,daemon="True")
         self.current_s   = ut.LOG_FILE
+        self.ferm_high   = 90
+        self.ferm_low    = 50
         if openweather:
             self.weather_url = openweather["apiurl"] + \
                     "units=" + openweather["units"] + \
@@ -37,6 +39,13 @@ class SessionLogger():
     def fun_timer(self):
         while self.timer_flag:
             data     = self.get_current()
+            if "recipe" in data:
+                if "fermentation" in data["recipe"]:
+                    if "temperatures" in data["recipe"]["fermentation"]:
+                        print(data["recipe"]["fermentation"])
+                        self.ferm_high = data["recipe"]["fermentation"]["temperatures"]["high"]
+                        self.ferm_low = data["recipe"]["fermentation"]["temperatures"]["low"]
+
             new_read = self.get_readings()
             new_data = data["session"]["readings"].append(new_read)
             self.update_file(json.dumps(data))
@@ -98,7 +107,7 @@ class SessionLogger():
 
     def check_thresholds(self,reading):
         if warning:
-            if reading > warning["threshold_up"] or reading < warning["threshold_down"]:
+            if reading > warning["threshold_up"] or reading < warning["threshold_down"] or reading < self.ferm_low or reading > self.ferm_high:
                 warning["subject"] = "Wort reading reaching threshold"
                 warning["message"] = "Warning, wort tempeture reaching threshold temperaturess\n\nCheck on it:\n\tWort temp: {}".format(reading)
                 ut.send_email(warning)

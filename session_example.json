@@ -5,6 +5,12 @@
 		"type": {
 			"id": 55,
 			"name": "brown ale"
+		},
+		"fermentation": {
+			"temperatures": {
+				"high": 69,
+				"low": 59
+			}
 		}
 	},
 	"session": {
